@@ -8,18 +8,21 @@ const User = require("../models/userModel");
 //@access public
 const registerUser = asyncHandler(async(req, res)=>{
     const { username, email, password } = req.body;
+    console.log("attempting registerUser");
     if(!username || !email || !password) {
         res.status(400);
         throw new Error("All fields are mandatory!");
     };
     
     const userAvailable = await User.findOne({email});
+    console.log("attempting to find user existing...");
     if(userAvailable){
         res.status(400);
         throw new Error("User already registered!");
     };
 
     //Hash password
+    console.log("Hashing password....")
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("Hashed Password: " +hashedPassword);
     const user = await User.create({
